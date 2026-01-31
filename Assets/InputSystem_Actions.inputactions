@@ -23,16 +23,34 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "TauntSelected",
+                    "type": "Button",
+                    "id": "0b6c1bcf-d2a9-422b-bd8f-9ec9c286d95b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "NothingSelected",
+                    "type": "Button",
+                    "id": "8236009f-24d3-4f6f-b931-6c83353b169e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
                     "name": "",
                     "id": "10b191a3-256b-4dad-b8fe-6dfbcdfcc617",
-                    "path": "<Keyboard>/upArrow",
-                    "interactions": "",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "Press",
                     "processors": "",
-                    "groups": ";Arrows",
+                    "groups": ";Keyboard",
                     "action": "SlapSelected",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -40,21 +58,10 @@
                 {
                     "name": "",
                     "id": "9c91ca14-dd5f-49c1-86a8-156341469130",
-                    "path": "<Gamepad>/buttonNorth",
-                    "interactions": "",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "Press",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "SlapSelected",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "149c130b-37bd-4d8b-b94e-135f34ddc842",
-                    "path": "<Keyboard>/w",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
                     "action": "SlapSelected",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -63,9 +70,9 @@
                     "name": "",
                     "id": "554bb8db-568b-4e34-ab18-7e1ea52a2e54",
                     "path": "<Keyboard>/downArrow",
-                    "interactions": "",
+                    "interactions": "Press",
                     "processors": "",
-                    "groups": ";Arrows",
+                    "groups": ";Keyboard",
                     "action": "ProtectSelected",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -74,7 +81,7 @@
                     "name": "",
                     "id": "3ddbff10-4e4f-404a-b17e-66c562ce7af3",
                     "path": "<Gamepad>/buttonSouth",
-                    "interactions": "",
+                    "interactions": "Press",
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "ProtectSelected",
@@ -83,12 +90,45 @@
                 },
                 {
                     "name": "",
-                    "id": "534c09a6-d0c2-40c2-bb25-610731730a97",
-                    "path": "<Keyboard>/s",
-                    "interactions": "",
+                    "id": "d1f2495a-52f0-4c11-91e7-fd1fedd6e141",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "Press",
                     "processors": "",
                     "groups": ";Keyboard",
-                    "action": "ProtectSelected",
+                    "action": "TauntSelected",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "af12ae87-63f4-4af9-9028-652bc4476320",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "TauntSelected",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "77c4d2a3-372b-4d93-8dc7-dd8b40f9591f",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": ";Keyboard",
+                    "action": "NothingSelected",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "97fedb57-928e-4cf7-97f6-b1ff745c25b4",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "NothingSelected",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -141,28 +181,6 @@
             "devices": [
                 {
                     "devicePath": "<Joystick>",
-                    "isOptional": false,
-                    "isOR": false
-                }
-            ]
-        },
-        {
-            "name": "XR",
-            "bindingGroup": "XR",
-            "devices": [
-                {
-                    "devicePath": "<XRController>",
-                    "isOptional": false,
-                    "isOR": false
-                }
-            ]
-        },
-        {
-            "name": "Arrows",
-            "bindingGroup": "Arrows",
-            "devices": [
-                {
-                    "devicePath": "<Keyboard>",
                     "isOptional": false,
                     "isOR": false
                 }
