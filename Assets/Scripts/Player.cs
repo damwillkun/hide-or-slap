@@ -12,14 +12,18 @@ public class Player : MonoBehaviour
 	}
 
 	private State stateSelected;
+
+
     [HideInInspector]
     public PlayerInput playerInput;
 
+    private Animator animator;
     private bool canSelectAction = false;
 
     void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+        animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -38,6 +42,7 @@ public class Player : MonoBehaviour
         {
             Debug.Log("SLAP");
             stateSelected = State.Slap;
+            animator.SetTrigger("FakingSlap");
         }
     }
 
@@ -47,8 +52,30 @@ public class Player : MonoBehaviour
         {
             Debug.Log("PROTECT");
             stateSelected = State.MaskOn;
+            animator.SetTrigger("FakingMaskOn");
         }
     }
 
+    public void PlayAction()
+    {
+        switch (stateSelected)
+        {
+            case State.None:
+                break;
+            case State.MaskOn:
+                animator.SetTrigger("PutMaskOn");
+                break;
+            case State.Slap:
+                animator.SetTrigger("Slap");
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void PlayIdle()
+    {
+        animator.SetTrigger("Idle");
+    }
 }
 

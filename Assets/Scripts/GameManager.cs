@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     public int DisplayRoundTitleDuration;
     public int PrepareActionSequenceDuration;
     public int PlayActionSequenceDuration;
+    public int ActionsDuration;
     [Space]
     public int TimeToSelectActions;
 
@@ -93,10 +94,17 @@ public class GameManager : MonoBehaviour
             UIManager.Instance.SequenceTitlePrepareAction.SetActive(false);
             yield return StartCoroutine(WaitingAction());
 
+            foreach (Player player in players)
+            {
+                player.PlayIdle();
+            }
+
             UIManager.Instance.SequenceTitlePlayAction.SetActive(true);
             yield return new WaitForSeconds(PlayActionSequenceDuration);
             UIManager.Instance.SequenceTitlePlayAction.SetActive(false);
             yield return StartCoroutine(PlayActions());
+
+            yield return new WaitForSeconds(ActionsDuration);
 
             yield return null;
         }
@@ -119,7 +127,13 @@ public class GameManager : MonoBehaviour
     {
         OnNewSequenceEvent?.Invoke(Sequence.PlayAction);
         Debug.Log("Fight");
-        yield return new WaitForSeconds(4f); // TEMP
+
+        yield return new WaitForSeconds(1f); // TEMP / TODO: Ajouter suspens
+
+        foreach (Player player in players)
+        {
+            player.PlayAction();
+        }
 
         yield return null;
     }
