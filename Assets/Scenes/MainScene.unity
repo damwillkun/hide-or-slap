@@ -8748,6 +8748,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CountdownTimer
   TimerText: {fileID: 682727011}
+  CurrentRound: {fileID: 1992087929}
+  CurrentRoundText: {fileID: 1936155182}
 --- !u!114 &1246991160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13223,7 +13225,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Press a button to join
+  m_text: Press button to join
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -13556,8 +13558,6 @@ MonoBehaviour:
   PrepareActionCountdownTimer: {fileID: 1246991159}
   EndGame: {fileID: 167181578}
   VersusDisplay: {fileID: 120891725}
-  CurrentRound: {fileID: 1992087929}
-  CurrentRoundText: {fileID: 1936155182}
   Scoring: {fileID: 1658226741}
   ScoreAnimP1: {fileID: 1626559545}
   ScoreAnimP2: {fileID: 876214064}
