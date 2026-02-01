@@ -77,6 +77,7 @@ public class GameManager : MonoBehaviour
             player.playerInput.camera.enabled = true;
         }
         CameraMainMenu.gameObject.SetActive(false);
+        UIManager.Instance.DisplayVersus(true);
 
         // Boucle GamePlay > tant que les deux joueurs sont alive
         // Waiting for input
@@ -94,15 +95,16 @@ public class GameManager : MonoBehaviour
             UIManager.Instance.SequenceTitlePrepareAction.SetActive(false);
             yield return StartCoroutine(WaitingAction());
 
-            foreach (Player player in players)
-            {
-                player.PlayIdle();
-            }
+            //foreach (Player player in players)
+            //{
+            //    player.PlayIdle();
+            //}
 
             UIManager.Instance.SequenceTitlePlayAction.SetActive(true);
             yield return new WaitForSeconds(PlayActionSequenceDuration);
             UIManager.Instance.SequenceTitlePlayAction.SetActive(false);
             yield return StartCoroutine(PlayActions());
+            yield return StartCoroutine(ResolveActions());
 
             yield return new WaitForSeconds(ActionsDuration);
 
@@ -115,6 +117,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("WaitingAction");
         OnNewSequenceEvent?.Invoke(Sequence.StartWaitingAction);
 
+        UIManager.Instance.PrepareActionCountdownTimer.gameObject.SetActive(true);
         UIManager.Instance.PrepareActionCountdownTimer.StartTimer(TimeToSelectActions);
         yield return new WaitForSeconds(TimeToSelectActions + 1f);
 
@@ -128,14 +131,78 @@ public class GameManager : MonoBehaviour
         OnNewSequenceEvent?.Invoke(Sequence.PlayAction);
         Debug.Log("Fight");
 
-        yield return new WaitForSeconds(1f); // TEMP / TODO: Ajouter suspens
-
         foreach (Player player in players)
         {
             player.PlayAction();
         }
 
         yield return null;
+    }
+
+    IEnumerator ResolveActions()
+    {
+        yield return new WaitForSeconds(1f); // TODO
+
+        int scoreP1 = 0;
+        int scoreP2 = 0;
+
+        ResolveRound(players[0], players[1], out scoreP1, out scoreP2);
+
+        yield return new WaitForSeconds(1f); // TODO
+
+        yield return null;
+    }
+
+    private void ResolveRound(Player p1, Player p2, out int scoreP1, out int scoreP2)
+    {
+        scoreP1 = 0;
+        scoreP2 = 0;
+
+        // Same choice 0 / 0
+        if (p1 == p2)
+            return;
+
+        // Slap beat Taunt
+        if (p1.StateSelected == Player.State.Slap && p2.StateSelected == Player.State.Taunt)
+        {
+            p2.PlayHit();
+            scoreP1 = 1;
+            return;
+        }
+        if (p2.StateSelected == Player.State.Slap && p1.StateSelected == Player.State.Taunt)
+        {
+            p1.PlayHit();
+            scoreP2 = 1;
+            return;
+        }
+
+        // MaskOn beat Slap
+        if (p1.StateSelected == Player.State.MaskOn && p2.StateSelected == Player.State.Slap)
+        {
+            p1.PlayTaunt();
+            scoreP1 = 1;
+            scoreP2 = -1;
+            return;
+        }
+        if (p2.StateSelected == Player.State.MaskOn && p1.StateSelected == Player.State.Slap)
+        {
+            p2.PlayTaunt();
+            scoreP2 = 1;
+            scoreP1 = -1;
+            return;
+        }
+
+        // Taunt beat MaskOn
+        if (p1.StateSelected == Player.State.Taunt && p2.StateSelected == Player.State.MaskOn)
+        {
+            scoreP1 = 1;
+            return;
+        }
+        if (p2.StateSelected == Player.State.Taunt && p1.StateSelected == Player.State.MaskOn)
+        {
+            scoreP2 = 1;
+            return;
+        }
     }
 }
 

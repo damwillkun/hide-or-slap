@@ -1,22 +1,30 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-	enum State
+	public enum State
 	{
 		None,
 		MaskOn,
-		Slap
+		Slap,
+        Taunt
 	}
 
-	private State stateSelected;
+    [Header("Animation Triggers Names")]
+    public string Idle;
+    public string FakingSlap;
+    public string FakingMaskOn;
+    public string Slap;
+    public string MaskOn;
+    public string Hit;
+    public string Taunt;
 
+    public State StateSelected { get { return stateSelected; } }
 
     [HideInInspector]
     public PlayerInput playerInput;
-
+	private State stateSelected;
     private Animator animator;
     private bool canSelectAction = false;
 
@@ -42,7 +50,7 @@ public class Player : MonoBehaviour
         {
             Debug.Log("SLAP");
             stateSelected = State.Slap;
-            animator.SetTrigger("FakingSlap");
+            animator.SetTrigger(FakingSlap);
         }
     }
 
@@ -52,7 +60,27 @@ public class Player : MonoBehaviour
         {
             Debug.Log("PROTECT");
             stateSelected = State.MaskOn;
-            animator.SetTrigger("FakingMaskOn");
+            animator.SetTrigger(FakingMaskOn);
+        }
+    }
+
+    public void OnTauntSelected(InputValue value)
+    {
+        if (value.isPressed && canSelectAction)
+        {
+            Debug.Log("TAUNT");
+            stateSelected = State.Taunt;
+            animator.SetTrigger(Taunt);
+        }
+    }
+
+    public void OnNothingSelected(InputValue value)
+    {
+        if (value.isPressed && canSelectAction)
+        {
+            Debug.Log("IDLE");
+            stateSelected = State.None;
+            animator.SetTrigger(Idle);
         }
     }
 
@@ -63,10 +91,13 @@ public class Player : MonoBehaviour
             case State.None:
                 break;
             case State.MaskOn:
-                animator.SetTrigger("PutMaskOn");
+                animator.SetTrigger(MaskOn);
                 break;
             case State.Slap:
-                animator.SetTrigger("Slap");
+                animator.SetTrigger(Slap);
+                break;
+            case State.Taunt:
+                animator.SetTrigger(Taunt);
                 break;
             default:
                 break;
@@ -75,7 +106,17 @@ public class Player : MonoBehaviour
 
     public void PlayIdle()
     {
-        animator.SetTrigger("Idle");
+        animator.SetTrigger(Idle);
+    }
+
+    public void PlayHit()
+    {
+        animator.SetTrigger(Hit);
+    }
+
+    public void PlayTaunt()
+    {
+        animator.SetTrigger(Taunt);
     }
 }
 

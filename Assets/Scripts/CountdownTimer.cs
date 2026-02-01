@@ -1,16 +1,18 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class CountdownTimer : MonoBehaviour
 {
-    private TextMeshProUGUI timerText;
+    public TextMeshProUGUI TimerText;
+    private Image backgroundImage;
     private float currentTime;
     private bool isRunning = false;
 
     private void Awake()
     {
-        timerText = GetComponent<TextMeshProUGUI>();
-        timerText.enabled = false;
+        backgroundImage = GetComponent<Image>();
+        TimerText.enabled = false;
     }
 
     void Update()
@@ -25,7 +27,8 @@ public class CountdownTimer : MonoBehaviour
         }
         else
         {
-            timerText.enabled = false;
+            backgroundImage.enabled = false;
+            TimerText.enabled = false;
             isRunning = false;
             // Ici tu peux déclencher un événement quand le timer est fini
             // Exemple : Debug.Log("Timer terminé !");
@@ -37,21 +40,28 @@ public class CountdownTimer : MonoBehaviour
         currentTime = duration;
         UpdateTimerDisplay();
 
-        timerText.enabled = true;
+        backgroundImage.enabled = true;
+        TimerText.enabled = true;
         isRunning = true;
     }
 
     public void StopTimer()
     {
-        timerText.enabled = false;
+        backgroundImage.enabled = false;
+        TimerText.enabled = false;
         isRunning = false;
     }
 
     void UpdateTimerDisplay()
     {
-        int minutes = Mathf.FloorToInt(currentTime / 60);
-        int seconds = Mathf.FloorToInt(currentTime % 60);
+        //int seconds = Mathf.FloorToInt(currentTime);
+        //int milliseconds = Mathf.FloorToInt((currentTime - seconds) * 1000);
 
-        timerText.text = $"{minutes:00}:{seconds:00}";
+        //TimerText.text = $"{seconds:00}:{milliseconds:00}";
+        int minutes = Mathf.FloorToInt(currentTime / 60f);
+        int seconds = Mathf.FloorToInt(currentTime % 60f);
+        int milliseconds = Mathf.FloorToInt((currentTime * 1000f) % 1000f);
+
+        TimerText.text = $"{seconds:00}:{milliseconds:000}";
     }
 }
