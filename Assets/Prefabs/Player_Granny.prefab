@@ -192,7 +192,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4223129364016999714}
   - component: {fileID: 5175900173000515559}
-  - component: {fileID: 5357627776662869305}
   - component: {fileID: 1941309260875012180}
   m_Layer: 0
   m_Name: Player_Granny
@@ -241,26 +240,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5357627776662869305
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3996499674583696711}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3401c7cb6dfc3ed4796ebb698fab5dc8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Player
-  Idle: Idle
-  FakingSlap: PrepareSlap
-  FakingMaskOn: PrepareMaskOn
-  Slap: Slap
-  MaskOn: MaskOn
-  Hit: Hit
-  Taunt: IdleTaunt
-  playerInput: {fileID: 0}
 --- !u!114 &1941309260875012180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,7 +247,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3996499674583696711}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
@@ -399,7 +378,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7608550381952561954
 Transform:
   m_ObjectHideFlags: 0
@@ -641,7 +620,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7399158925524653391}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1

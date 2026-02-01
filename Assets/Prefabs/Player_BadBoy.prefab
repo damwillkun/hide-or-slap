@@ -172,7 +172,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 5607016146972820312, guid: 6d7ec6d2a8223bad19e29c8d32a2b920, type: 3}
+  m_Sprite: {fileID: 3535199532337667167, guid: 6d7ec6d2a8223bad19e29c8d32a2b920, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -180,7 +180,7 @@ SpriteRenderer:
   m_Size: {x: 0.59, y: 0.63}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
 --- !u!1 &3315232575129237367
 GameObject:
@@ -199,7 +199,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1601906849039942468
 Transform:
   m_ObjectHideFlags: 0
@@ -459,10 +459,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5229089436906723244}
   - component: {fileID: 8653959360467978737}
-  - component: {fileID: 5369993145661314901}
   - component: {fileID: 4444211807237964603}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Player_BadBoy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -493,7 +492,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5007034857978937289}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
@@ -516,26 +515,6 @@ MonoBehaviour:
   m_DefaultActionMap: Gameplay
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 172727888081482285}
---- !u!114 &5369993145661314901
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5007034857978937289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3401c7cb6dfc3ed4796ebb698fab5dc8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Player
-  Idle: Idle
-  FakingSlap: PrepareSlap
-  FakingMaskOn: PrepareMaskOn
-  Slap: Slap
-  MaskOn: MaskOn
-  Hit: Hit
-  Taunt: IdleTaunt
-  playerInput: {fileID: 0}
 --- !u!95 &4444211807237964603
 Animator:
   serializedVersion: 7
@@ -639,15 +618,15 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 4
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7202886811075269872, guid: 6d7ec6d2a8223bad19e29c8d32a2b920, type: 3}
+  m_Sprite: {fileID: 8712594605126786708, guid: 6d7ec6d2a8223bad19e29c8d32a2b920, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.27, y: 0.48}
+  m_Size: {x: 0.26, y: 0.48}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
 --- !u!1 &7284394742819628830
 GameObject:
@@ -730,7 +709,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 6487368565461814861, guid: 6d7ec6d2a8223bad19e29c8d32a2b920, type: 3}
+  m_Sprite: {fileID: 5417979840571013430, guid: 6d7ec6d2a8223bad19e29c8d32a2b920, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -738,7 +717,7 @@ SpriteRenderer:
   m_Size: {x: 0.28, y: 0.42}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
 --- !u!1 &7780922751188166639
 GameObject:
@@ -869,7 +848,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -8154281344974891854, guid: 6d7ec6d2a8223bad19e29c8d32a2b920, type: 3}
+  m_Sprite: {fileID: 1134501554509281180, guid: 6d7ec6d2a8223bad19e29c8d32a2b920, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -877,5 +856,5 @@ SpriteRenderer:
   m_Size: {x: 0.2, y: 0.29}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,20 +19,41 @@ public class GameManager : MonoBehaviour
     public GameObject CameraMainMenu;
     public PlayerInputManager PlayerInputManager;
     [Space]
+    public List<GameObject> PrefabPlayers;
+    [Space]
     public Transform SpawnPointPlayer1;
     public Transform SpawnPointPlayer2;
+    [Header("Scoring")]
+    public int MaxScore;
+    [Header("Round settings")]
+    public int MaxRounds; 
+    public int RoundCountdownTimer;
+    public int TimerReducePerRound;
+    public int MinTimerPerRound;
     [Header("Sequences delay")]
     public int DisplayRoundTitleDuration;
     public int PrepareActionSequenceDuration;
     public int PlayActionSequenceDuration;
     public int ActionsDuration;
-    [Space]
-    public int TimeToSelectActions;
+    public int ScoreUpdateDuration;
+    [Header("Audio")]
+    public SoundManager AudioManager;
+
+    public Player Player1 { get {return players.Count > 0 ? players[0] : null;} }
+    public Player Player2 { get {return players.Count > 1 ? players[1] : null;} }
 
     public Action<Sequence> OnNewSequenceEvent;
 
-    private int currentRound;
+    [HideInInspector]
+    public int CurrentRound;
+
+    private int currentRoundCountdownTimer;
     private List<Player> players = new();
+    private List<GameObject> playersToLeft = new();
+    private int currentScoreP1 = 0;
+    private int currentScoreP2 = 0;
+    private int scoreWinP1 = 0;
+    private int scoreWinP2 = 0;
 
     private void Awake()
     {
@@ -47,12 +69,22 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        currentRoundCountdownTimer = RoundCountdownTimer;
         CameraMainMenu.gameObject.SetActive(true);
+
+        playersToLeft = new List<GameObject>(PrefabPlayers);
     }
 
     public void OnPlayerJoinedEvent(PlayerInput playerInput)
     {
         Debug.Log($"Player Joined [{playerInput.playerIndex}]");
+
+        int randomChar = UnityEngine.Random.Range(0, playersToLeft.Count);
+        GameObject charToInstatiate = playersToLeft[randomChar];
+        playersToLeft.RemoveAt(randomChar);
+
+        Instantiate(charToInstatiate, playerInput.transform.position, playerInput.transform.rotation, playerInput.transform);
+
         players.Add(playerInput.GetComponent<Player>());
 
         playerInput.transform.parent = (playerInput.playerIndex == 0) ? SpawnPointPlayer1 : SpawnPointPlayer2;
@@ -63,6 +95,8 @@ public class GameManager : MonoBehaviour
 
         if(players.Count == 2)
         {
+            UIManager.Instance.DisplayMainTitle(false);
+
             StartCoroutine(StartGame());
         }
     }
@@ -70,6 +104,7 @@ public class GameManager : MonoBehaviour
     IEnumerator StartGame()
     {
         yield return new WaitForSeconds(2);
+        AudioManager.audioSource.volume = AudioManager.audioSource.volume * 0.5f;
 
         // Transition to player cameras
         foreach (Player player in players)
@@ -78,38 +113,58 @@ public class GameManager : MonoBehaviour
         }
         CameraMainMenu.gameObject.SetActive(false);
         UIManager.Instance.DisplayVersus(true);
-
-        // Boucle GamePlay > tant que les deux joueurs sont alive
-        // Waiting for input
-        while (true)
+        while (CurrentRound < MaxRounds)
         {
-            currentRound++;
+            CurrentRound++;
+            UIManager.Instance.UpdateRound();
 
-            // TODO: Display "ROUND X !!!!" + voice
-            UIManager.Instance.DisplayRound(currentRound);
+            // DISPLAY --- CURRENT ROUND
+            UIManager.Instance.DisplayRound(CurrentRound);
             yield return new WaitForSeconds(DisplayRoundTitleDuration);
             UIManager.Instance.HideTitles();
 
+            // DISPLAY --- PREPARE ACTION
             UIManager.Instance.SequenceTitlePrepareAction.SetActive(true);
             yield return new WaitForSeconds(PrepareActionSequenceDuration);
             UIManager.Instance.SequenceTitlePrepareAction.SetActive(false);
+
+            // WAITING FOR PLAYERS ACTIONS
             yield return StartCoroutine(WaitingAction());
 
-            //foreach (Player player in players)
-            //{
-            //    player.PlayIdle();
-            //}
-
+            // DISPLAY --- PLAY ACTION
             UIManager.Instance.SequenceTitlePlayAction.SetActive(true);
             yield return new WaitForSeconds(PlayActionSequenceDuration);
             UIManager.Instance.SequenceTitlePlayAction.SetActive(false);
-            yield return StartCoroutine(PlayActions());
-            yield return StartCoroutine(ResolveActions());
 
-            yield return new WaitForSeconds(ActionsDuration);
+            // RESOLVE ACTIONS
+            yield return new WaitForSeconds(.5f);
+
+            yield return StartCoroutine(PlayActions());
+
+            if (CurrentRound % 2 == 0)
+            {
+                currentRoundCountdownTimer = Mathf.Max(
+                    currentRoundCountdownTimer - TimerReducePerRound,
+                    MinTimerPerRound
+                );
+            }
+
+            if(Player1.CurrentScore == MaxScore || Player2.CurrentScore == MaxScore)
+            {
+                StartCoroutine(EndGame());
+                break;
+            }
+            
+            foreach (Player player in players)
+            {
+                player.PlayIdle();
+            }
 
             yield return null;
         }
+
+        StartCoroutine(EndGame());
+        yield return null;
     }
 
     IEnumerator WaitingAction()
@@ -118,10 +173,12 @@ public class GameManager : MonoBehaviour
         OnNewSequenceEvent?.Invoke(Sequence.StartWaitingAction);
 
         UIManager.Instance.PrepareActionCountdownTimer.gameObject.SetActive(true);
-        UIManager.Instance.PrepareActionCountdownTimer.StartTimer(TimeToSelectActions);
-        yield return new WaitForSeconds(TimeToSelectActions + 1f);
+        UIManager.Instance.PrepareActionCountdownTimer.StartTimer(currentRoundCountdownTimer);
+        yield return new WaitForSeconds(currentRoundCountdownTimer);
 
         OnNewSequenceEvent?.Invoke(Sequence.EndWaitingAction);
+
+        yield return new WaitForSeconds(1f);
 
         yield return null;
     }
@@ -131,78 +188,130 @@ public class GameManager : MonoBehaviour
         OnNewSequenceEvent?.Invoke(Sequence.PlayAction);
         Debug.Log("Fight");
 
-        foreach (Player player in players)
+        yield return StartCoroutine(ResolveRound(players[0], players[1]));
+
+        yield return new WaitForSeconds(ActionsDuration);
+
+        if (scoreWinP1 != 0)
         {
-            player.PlayAction();
+            int newScore = players[0].CurrentScore + scoreWinP1;
+            players[0].CurrentScore = (newScore <= 0) ? 0 : newScore;
+            UIManager.Instance.UpdateScore(1, scoreWinP1);
+        }
+        if (scoreWinP2 != 0)
+        {
+            int newScore = players[1].CurrentScore + scoreWinP2;
+            players[1].CurrentScore = (newScore <= 0) ? 0 : newScore;
+            UIManager.Instance.UpdateScore(2, scoreWinP2);
         }
 
-        yield return null;
-    }
+        UIManager.Instance.Scoring.UpdateScore();
 
-    IEnumerator ResolveActions()
-    {
-        yield return new WaitForSeconds(1f); // TODO
-
-        int scoreP1 = 0;
-        int scoreP2 = 0;
-
-        ResolveRound(players[0], players[1], out scoreP1, out scoreP2);
-
-        yield return new WaitForSeconds(1f); // TODO
+        yield return new WaitForSeconds(ScoreUpdateDuration);
 
         yield return null;
     }
 
-    private void ResolveRound(Player p1, Player p2, out int scoreP1, out int scoreP2)
+    IEnumerator ResolveRound(Player p1, Player p2)
     {
-        scoreP1 = 0;
-        scoreP2 = 0;
+        scoreWinP1 = 0;
+        scoreWinP2 = 0;
 
         // Same choice 0 / 0
-        if (p1 == p2)
-            return;
-
-        // Slap beat Taunt
-        if (p1.StateSelected == Player.State.Slap && p2.StateSelected == Player.State.Taunt)
+        if (p1.StateSelected == p2.StateSelected)
         {
-            p2.PlayHit();
-            scoreP1 = 1;
-            return;
+            if (p1.StateSelected == Player.State.Slap && p2.StateSelected == Player.State.Slap)
+            {
+                p1.PlaySlap();
+                p2.PlaySlap();
+                yield return new WaitForSeconds(.1f);
+                p1.PlayHit();
+                p2.PlayHit();
+                yield break;
+            }
+            if (p1.StateSelected == Player.State.MaskOn && p2.StateSelected == Player.State.MaskOn)
+            {
+                p1.PlayMaskOn();
+                p2.PlayMaskOn();
+                yield break;
+            }
         }
-        if (p2.StateSelected == Player.State.Slap && p1.StateSelected == Player.State.Taunt)
+
+        if (p1.StateSelected == Player.State.Slap && p2.StateSelected == Player.State.None)
+        {
+            p1.PlaySlap();
+            p2.PlayHit();
+            scoreWinP1 = 1;
+            yield break;
+        }
+        if (p2.StateSelected == Player.State.Slap && p1.StateSelected == Player.State.None)
         {
             p1.PlayHit();
-            scoreP2 = 1;
-            return;
+            p2.PlaySlap();
+            scoreWinP2 = 1;
+            yield break;
         }
 
-        // MaskOn beat Slap
         if (p1.StateSelected == Player.State.MaskOn && p2.StateSelected == Player.State.Slap)
         {
-            p1.PlayTaunt();
-            scoreP1 = 1;
-            scoreP2 = -1;
-            return;
+            p1.PlayMaskOn();
+            p2.PlaySlap();
+            scoreWinP1 = 1;
+            scoreWinP2 = -1;
+            yield break;
         }
         if (p2.StateSelected == Player.State.MaskOn && p1.StateSelected == Player.State.Slap)
         {
-            p2.PlayTaunt();
-            scoreP2 = 1;
-            scoreP1 = -1;
-            return;
+            p1.PlaySlap();
+            p2.PlayMaskOn();
+            scoreWinP2 = 1;
+            scoreWinP1 = -1;
+            yield break;
         }
 
-        // Taunt beat MaskOn
-        if (p1.StateSelected == Player.State.Taunt && p2.StateSelected == Player.State.MaskOn)
+        if (p1.StateSelected == Player.State.None && p2.StateSelected == Player.State.MaskOn)
         {
-            scoreP1 = 1;
-            return;
+            p1.PlayTaunt();
+            p2.PlayMaskOn();
+            scoreWinP1 = 1;
+            yield break;
         }
-        if (p2.StateSelected == Player.State.Taunt && p1.StateSelected == Player.State.MaskOn)
+        if (p2.StateSelected == Player.State.None && p1.StateSelected == Player.State.MaskOn)
         {
-            scoreP2 = 1;
-            return;
+            p1.PlayMaskOn();
+            p2.PlayTaunt();
+            scoreWinP2 = 1;
+            yield break;
         }
+    }
+
+    IEnumerator EndGame()
+    {
+        if(Player1.CurrentScore == MaxScore)
+        {
+            UIManager.Instance.DisplayWinner(1);
+        }
+        else if(Player1.CurrentScore == MaxScore)
+        {
+            UIManager.Instance.DisplayWinner(2);
+        }
+        else
+        {
+            if(Player1.CurrentScore > Player2.CurrentScore)
+            {
+                UIManager.Instance.DisplayWinner(1);
+            }
+            else if(Player2.CurrentScore > Player1.CurrentScore)
+            {
+                UIManager.Instance.DisplayWinner(2);
+            }
+            else
+            {
+                UIManager.Instance.DisplayWinner(-1);
+            }
+        }
+
+        yield return null;
     }
 }
 

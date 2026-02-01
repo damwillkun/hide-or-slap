@@ -7,8 +7,7 @@ public class Player : MonoBehaviour
 	{
 		None,
 		MaskOn,
-		Slap,
-        Taunt
+		Slap
 	}
 
     [Header("Animation Triggers Names")]
@@ -24,19 +23,22 @@ public class Player : MonoBehaviour
 
     [HideInInspector]
     public PlayerInput playerInput;
+    [HideInInspector]
+    public int CurrentScore;
+
+    private CameraShake cameraShake;
 	private State stateSelected;
     private Animator animator;
     private bool canSelectAction = false;
-
-    void Awake()
-    {
-        playerInput = GetComponent<PlayerInput>();
-        animator = GetComponent<Animator>();
-    }
+    private bool isTaunt = true;
 
     private void Start()
     {
         GameManager.Instance.OnNewSequenceEvent += GameManager_OnNewSequenceEvent;
+
+        cameraShake = GetComponentInChildren<CameraShake>();
+        playerInput = GetComponent<PlayerInput>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void GameManager_OnNewSequenceEvent(GameManager.Sequence sequence)
@@ -69,18 +71,10 @@ public class Player : MonoBehaviour
         if (value.isPressed && canSelectAction)
         {
             Debug.Log("TAUNT");
-            stateSelected = State.Taunt;
-            animator.SetTrigger(Taunt);
-        }
-    }
-
-    public void OnNothingSelected(InputValue value)
-    {
-        if (value.isPressed && canSelectAction)
-        {
-            Debug.Log("IDLE");
             stateSelected = State.None;
-            animator.SetTrigger(Idle);
+
+            isTaunt = !isTaunt;
+            animator.SetTrigger(isTaunt ? Idle : Taunt);
         }
     }
 
@@ -89,6 +83,7 @@ public class Player : MonoBehaviour
         switch (stateSelected)
         {
             case State.None:
+                animator.SetTrigger(isTaunt ? Taunt : Idle);
                 break;
             case State.MaskOn:
                 animator.SetTrigger(MaskOn);
@@ -96,12 +91,20 @@ public class Player : MonoBehaviour
             case State.Slap:
                 animator.SetTrigger(Slap);
                 break;
-            case State.Taunt:
-                animator.SetTrigger(Taunt);
-                break;
             default:
                 break;
         }
+    }
+
+    public void PlaySlap()
+    {
+        GameManager.Instance.AudioManager.PlaySlapSound();
+        animator.SetTrigger(Slap);
+    }
+
+    public void PlayMaskOn()
+    {
+        animator.SetTrigger(MaskOn);
     }
 
     public void PlayIdle()
@@ -111,6 +114,7 @@ public class Player : MonoBehaviour
 
     public void PlayHit()
     {
+        cameraShake.Shake();
         animator.SetTrigger(Hit);
     }
 

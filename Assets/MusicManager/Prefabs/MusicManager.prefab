@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1680850287037086742}
   - component: {fileID: 5093576314916241945}
   - component: {fileID: 5204081069177165227}
+  - component: {fileID: 5666288703199030059}
   m_Layer: 0
   m_Name: MusicManager
   m_TagString: Untagged
@@ -25,13 +26,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9027577616540085282}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &5093576314916241945
 AudioSource:
@@ -44,8 +45,9 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.585
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -150,3 +152,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 98b0bc39ec9d8cf40acb4a35d6165cf8, type: 3}
   - {fileID: 8300000, guid: 7788f13925301474a89d358a26b65a4f, type: 3}
   - {fileID: 8300000, guid: 4b5fc0db78250b349bccb9f4ba83af86, type: 3}
+--- !u!81 &5666288703199030059
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9027577616540085282}
+  m_Enabled: 1

@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -5,17 +6,20 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
 
+    public GameObject MainMenu;
     public TextMeshProUGUI TextTitleRound;
     public GameObject SequenceTitlePrepareAction;
     public GameObject SequenceTitlePlayAction;
-    public GameObject VersusSeparator;
     public CountdownTimer PrepareActionCountdownTimer;
-    [Header("Player 1")]
-    public TextMeshProUGUI ScoringValueP1;
-    public TextMeshProUGUI UpdateScoreValueP1;
-    [Header("Player 2")]
-    public TextMeshProUGUI ScoringValueP2;
-    public TextMeshProUGUI UpdateScoreValueP2;
+    public TextMeshProUGUI EndGame;
+    [Space]
+    public GameObject VersusDisplay;
+    public GameObject CurrentRound;
+    public TextMeshProUGUI CurrentRoundText;
+    [Header("Scores")]
+    public Scoring Scoring;
+    public ScoreAnim ScoreAnimP1;
+    public ScoreAnim ScoreAnimP2;
 
     private void Awake()
     {
@@ -30,14 +34,12 @@ public class UIManager : MonoBehaviour
 
         HideTitles();
 
-        PrepareActionCountdownTimer.gameObject.SetActive(false);
+        EndGame.gameObject.SetActive(false);
+        VersusDisplay.gameObject.SetActive(false);
 
-        ScoringValueP1.gameObject.SetActive(false);
-        ScoringValueP1.text= "0";
-        UpdateScoreValueP1.gameObject.SetActive(false);
-        ScoringValueP1.gameObject.SetActive(false);
-        ScoringValueP2.text = "0";
-        UpdateScoreValueP2.gameObject.SetActive(false);
+        DisplayMainTitle(true);
+
+        PrepareActionCountdownTimer.gameObject.SetActive(false);
 
         DisplayVersus(false);
     }
@@ -57,10 +59,46 @@ public class UIManager : MonoBehaviour
         TextTitleRound.gameObject.SetActive(true);
     }
 
+    public void DisplayMainTitle(bool displayed)
+    {
+        MainMenu.gameObject.SetActive(displayed);
+    }
+
     public void DisplayVersus(bool displayed)
     {
-        VersusSeparator.gameObject.SetActive(displayed);
-        ScoringValueP1.gameObject.SetActive(true);
-        ScoringValueP1.gameObject.SetActive(true);
+        VersusDisplay.gameObject.SetActive(displayed);
+        Scoring.gameObject.SetActive(displayed);
+        CurrentRoundText.text = "ROUND 1";
+        CurrentRound.SetActive(displayed);
+    }
+
+    public void UpdateScore(int indexPlayer, int score)
+    {
+        if(indexPlayer == 1)
+        {
+            ScoreAnimP1.PlayScore(score);
+        }
+        else if(indexPlayer == 2)
+        {
+            ScoreAnimP2.PlayScore(score);
+        }
+    }
+
+    public void DisplayWinner(int indexWinnerPlayer)
+    {
+        if(indexWinnerPlayer > 0)
+        {
+            EndGame.text = "PLAYER " + indexWinnerPlayer + " WINS!";
+            EndGame.gameObject.SetActive(true);
+        }
+        else
+        {
+            EndGame.text = "EQUALITY";
+        }
+    }
+
+    public void UpdateRound()
+    {
+        CurrentRoundText.text = "ROUND " + GameManager.Instance.CurrentRound;
     }
 }
