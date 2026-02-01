@@ -5,6 +5,9 @@ using UnityEngine.UI;
 public class CountdownTimer : MonoBehaviour
 {
     public TextMeshProUGUI TimerText;
+    public GameObject CurrentRound;
+    public TextMeshProUGUI CurrentRoundText;
+
     private Image backgroundImage;
     private float currentTime;
     private bool isRunning = false;
@@ -13,6 +16,8 @@ public class CountdownTimer : MonoBehaviour
     {
         backgroundImage = GetComponent<Image>();
         TimerText.enabled = false;
+        CurrentRoundText.text = "ROUND 1";
+        CurrentRound.SetActive(false);
     }
 
     void Update()
@@ -29,6 +34,7 @@ public class CountdownTimer : MonoBehaviour
         {
             backgroundImage.enabled = false;
             TimerText.enabled = false;
+            CurrentRound.SetActive(false);
             isRunning = false;
             // Ici tu peux déclencher un événement quand le timer est fini
             // Exemple : Debug.Log("Timer terminé !");
@@ -42,6 +48,7 @@ public class CountdownTimer : MonoBehaviour
 
         backgroundImage.enabled = true;
         TimerText.enabled = true;
+        CurrentRound.SetActive(true);
         isRunning = true;
     }
 
@@ -49,6 +56,7 @@ public class CountdownTimer : MonoBehaviour
     {
         backgroundImage.enabled = false;
         TimerText.enabled = false;
+        CurrentRound.SetActive(false);
         isRunning = false;
     }
 
@@ -63,5 +71,10 @@ public class CountdownTimer : MonoBehaviour
         int milliseconds = Mathf.FloorToInt((currentTime * 1000f) % 1000f);
 
         TimerText.text = $"{seconds:00}:{milliseconds:000}";
+    }
+
+    public void UpdateRound()
+    {
+        CurrentRoundText.text = "ROUND " + GameManager.Instance.CurrentRound;
     }
 }

@@ -116,7 +116,7 @@ public class GameManager : MonoBehaviour
         while (CurrentRound < MaxRounds)
         {
             CurrentRound++;
-            UIManager.Instance.UpdateRound();
+            UIManager.Instance.PrepareActionCountdownTimer.UpdateRound();
 
             // DISPLAY --- CURRENT ROUND
             UIManager.Instance.DisplayRound(CurrentRound);

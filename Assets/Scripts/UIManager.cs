@@ -14,8 +14,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI EndGame;
     [Space]
     public GameObject VersusDisplay;
-    public GameObject CurrentRound;
-    public TextMeshProUGUI CurrentRoundText;
+
     [Header("Scores")]
     public Scoring Scoring;
     public ScoreAnim ScoreAnimP1;
@@ -68,8 +67,6 @@ public class UIManager : MonoBehaviour
     {
         VersusDisplay.gameObject.SetActive(displayed);
         Scoring.gameObject.SetActive(displayed);
-        CurrentRoundText.text = "ROUND 1";
-        CurrentRound.SetActive(displayed);
     }
 
     public void UpdateScore(int indexPlayer, int score)
@@ -95,10 +92,5 @@ public class UIManager : MonoBehaviour
         {
             EndGame.text = "EQUALITY";
         }
-    }
-
-    public void UpdateRound()
-    {
-        CurrentRoundText.text = "ROUND " + GameManager.Instance.CurrentRound;
     }
 }
